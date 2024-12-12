@@ -1,5 +1,7 @@
 package pe.edu.utp.controller.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import java.util.Map;
 
 @RestController
 public class PdfController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PdfController.class);
 
     @PostMapping("/download/pdf")
     public ResponseEntity<byte[]> downloadPdf(@RequestBody Map<String, List<List<String>>> data) {
@@ -66,6 +70,7 @@ public class PdfController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("ERROR: El PDF no se descargo correctamente", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

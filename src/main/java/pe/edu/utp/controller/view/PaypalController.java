@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,9 @@ public class PaypalController {
     private PacienteFacade pacienteFacade;
 
     private final PaypalFacade paypalFacade;
+
+    //LOGS
+    private static final Logger logger = LoggerFactory.getLogger(PaypalController.class);
 
     public PaypalController(PaypalFacade paypalFacade) {
         this.paypalFacade = paypalFacade;
@@ -101,6 +106,11 @@ public class PaypalController {
     @GetMapping("/payment/success")
     public String paymentSucces(@RequestParam("paymentId") String paymentId,
             @RequestParam("PayerID") String payerId, Authentication authentication, HttpSession session) {
+
+        //verificar duplicidad
+        if(session.getAttribute("idMedico") == null){
+            return "redirect:/paciente/perfil";
+        }
         // Obtener el usuario autenticado
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String idMedicoStr = (String) session.getAttribute("idMedico");
@@ -117,9 +127,16 @@ public class PaypalController {
                         medicoFacade.buscarMedicoPorId(idMedico), fecha, hora, EstadoCita.EN_ESPERA, "",
                         PagoCita.TARJETA);
                 citaFacade.registrarCitaMedica(cita);
+               session.removeAttribute("idMedico");
+               session.removeAttribute("fecha");
+               session.removeAttribute("hora");
+
+                 
                 return "redirect:/paciente/perfil";
             }
         } catch (PayPalRESTException e) {
+            //LOGGER
+           logger.error("ERROR: Hubo un problema al momento de crear una orden en paypal", e);
             System.err.println("Error :" + e);
         }
 
@@ -128,12 +145,15 @@ public class PaypalController {
 
     @GetMapping("/payment/cancel")
     public String paymentCancel() {
-        return "paciente-reservar";
+        //LOGGER
+        logger.info("INFO: Se cancelo un proceso de paga por paypal");
+        return "redirect:/paciente/reservar";
     }
 
     @GetMapping("/payment/error")
     public String paymentError() {
-        return "error";
+        logger.error("ERROR: Hubo un problema al momento de procesar el pago");
+        return "acceso-denegado";
     }
 
 }

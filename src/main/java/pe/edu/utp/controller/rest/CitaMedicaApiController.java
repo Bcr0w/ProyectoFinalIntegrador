@@ -24,6 +24,7 @@ public class CitaMedicaApiController {
 
     HashMap<String, Object> data;
 
+   
     @GetMapping("/listar")
     public List<CitaDto> listar(){
       List<CitaMedica> citasMedicas = citaFacade.obtenerTodasCitasMedicas();

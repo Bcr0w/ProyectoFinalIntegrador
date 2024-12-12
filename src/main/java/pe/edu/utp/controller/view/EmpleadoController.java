@@ -2,6 +2,8 @@ package pe.edu.utp.controller.view;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,8 @@ public class EmpleadoController {
     private RolFacade rolFacade;
     @Autowired
     private UsuarioFacade usuarioFacade;
+    //LOGS
+    private static final Logger logger = LoggerFactory.getLogger(EmpleadoController.class);
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -59,6 +63,9 @@ public class EmpleadoController {
         empleado.setUsuario(usuario);
 
         empleadoFacade.registrarEmpleado(empleado);
+        //LOG TIPO INFO
+        logger.info("INFO: Se agrego un nuevo empleado");
+
         return "redirect:/empleado/listar";
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -74,6 +81,8 @@ public class EmpleadoController {
     @DeleteMapping("/eliminar/{id}")
     public RedirectView eliminarEmpleado(@PathVariable Integer id){
     empleadoFacade.eliminarEmpleado(id);
+    //logger tipo info
+    logger.info("INFO: El empleado con el" + id + " ha sido eliminado");
     return new RedirectView("/empleado/listar");
     }
     

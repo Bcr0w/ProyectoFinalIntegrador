@@ -1,5 +1,7 @@
 package pe.edu.utp.controller.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import pe.edu.utp.dto.registroDto;
 import pe.edu.utp.model.Paciente;
@@ -32,9 +35,16 @@ public class UsuarioController {
     EmpleadoFacade empleadoFacade;
     @Autowired
     MedicoFacade medicoFacade;
+    //LOGS
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
   @GetMapping("/login")
-  public String iniciar() {
+  public String iniciar(@RequestParam(value = "error", required = false) String error,Model model) {
+    if (error != null) {
+      model.addAttribute("error", "Credenciales incorrectas. Por favor, inténtalo de nuevo.");
+      //LOGGER
+      logger.warn("ADVERTENCIA: Se ha intentado ingresar al sistema con credenciales incorrectos");
+  }
      return "iniciarSesion";
   }
   
@@ -67,6 +77,9 @@ public class UsuarioController {
     paciente.setFechaNacimiento(registroDTO.getFechaNacimiento());
     
     pacienteFacade.registrarPaciente(paciente); // Guardar el paciente en la base de datos
+
+    //LOGGER
+    logger.info("INFO: Se creo un nuevo paciente");
 
     return "redirect:/usuario/login"; // Redirigir a la página de inicio de sesión
   }

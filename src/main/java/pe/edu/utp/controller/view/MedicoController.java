@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -50,6 +52,9 @@ public class MedicoController {
     @Autowired
     UsuarioFacade usuarioFacade;
 
+    //LOGS
+    private static final Logger logger = LoggerFactory.getLogger(MedicoController.class);
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/listar")
     public String medicos(Model model) {
@@ -77,8 +82,12 @@ public class MedicoController {
         medico.setDireccion(medicoDto.getDireccion());
         medico.setTelefono(medicoDto.getTelefono());
         medico.setUsuario(usuario);
+        
 
         medicoFacade.registrarMedico(medico);
+
+        //LOGGER 
+        logger.info("INFO: Se creo un nuevo medico");
         return "redirect:/medico/listar";
     }
   

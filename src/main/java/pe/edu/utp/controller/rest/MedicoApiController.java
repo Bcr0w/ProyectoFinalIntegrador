@@ -3,6 +3,8 @@ package pe.edu.utp.controller.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,9 +24,14 @@ public class MedicoApiController {
     @Autowired
     MedicoFacade medicoFacade;
 
+    private static final Logger logger = LoggerFactory.getLogger(MedicoApiController.class);
+
     @DeleteMapping("/eliminar")
     public ResponseEntity<Void> eliminarEmpleado(@RequestBody Integer id) {
         medicoFacade.eliminarMedico(id);
+        //Log para identificar que un medico ha sido eliminado
+        logger.info("INFO: Un medico ha sido eliminado");
+
         return ResponseEntity.noContent().build();
     }
 

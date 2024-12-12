@@ -19,6 +19,10 @@ import pe.edu.utp.service.facade.CitaMedicaFacade;
 import pe.edu.utp.service.facade.EmpleadoFacade;
 import pe.edu.utp.service.facade.MedicoFacade;
 
+/*
+ * Controlador de admin para gestione y responde las solicitudes de los usuarios. 
+ * 
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -29,6 +33,12 @@ public class AdminController {
     @Autowired
     EmpleadoFacade empleadoFacade;
 
+    /**
+     * Muestra el dashboard del administrador.
+     * 
+     *@param model El modelo que almacenara los datos para que se muestren en la vista.
+     * 
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -44,19 +54,29 @@ public class AdminController {
         return "admin-home";
     }
 
+    /*
+     * Muestra la pagina de reportes del administrador.
+     * 
+     */
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/reportes")
     public String reportes() {
         return "admin-reportes";
     }
 
+    /**
+     * Muestra la pagina de reportes del administrador.
+     * @model El modelo que almacenara los datos para ser mostrados en la vista.
+     * @param authenticaction El objeto de autenticacion que contiene la informacion del usuario actual como sus roles,nombre,etc.
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/perfil")
     public String perfil(Model model, Authentication authentication) {
         // Obtener el usuario autenticado
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Empleado empleado = empleadoFacade.buscarEmpleadoPorId(userDetails.getIdCargo());
-        PerfilDto perfilDto = new PerfilDto(empleado.getNombre(),empleado.getApellidos(),empleado.getTelefono());
+        PerfilDto perfilDto = new PerfilDto(empleado.getNombre(), empleado.getApellidos(), empleado.getTelefono());
         model.addAttribute("perfilDto", perfilDto);
         return "perfil";
     }

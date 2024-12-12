@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <meta charset="UTF-8">
@@ -10,21 +10,24 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <style>
-    footer{
+    footer {
         bottom: 0;
         margin-top: 100px !important;
     }
-    .form-control{
-      height: 33px;
-      text-transform: none  !important;
-      font-size: 13px;
+
+    .form-control {
+        height: 33px;
+        text-transform: none !important;
+        font-size: 13px;
     }
-    form{
+
+    form {
         font-size: 14px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        
+
     }
-    button[type=submit]{
+
+    button[type=submit] {
         height: 33px;
         font-size: medium;
         font-weight: 200;
@@ -36,46 +39,59 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
     <!-- Barra de navegación -->
     <header>
         <div class="logo"><img th:src="@{/img/logo.png}" alt="" /></div>
-    
+
         <nav class="navbar">
-          <a th:href="@{/home}">Inicio</a>
-          <a th:href="@{/nosotros}">Acerca de</a>
-          <a th:href="@{/doctor}">Médicos</a>
-          <a th:href="@{/servicios}">Servicios</a>
+            <a th:href="@{/home}">Inicio</a>
+            <a th:href="@{/nosotros}">Acerca de</a>
+            <a th:href="@{/doctor}">Médicos</a>
+            <a th:href="@{/servicios}">Servicios</a>
         </nav>
-    
-    
-    
+
+
+
         <!-- Sección del Usuario -->
         <ul sec:authorize="isAuthenticated()" class="navbar-nav ms-auto">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              <img src="https://via.placeholder.com/30" class="rounded-circle" alt="Usuario"> <span
-                sec:authentication="principal.username"></span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Perfil</a></li>
-              <li sec:authorize="!hasRole('ROLE_PACIENTE')">
-                <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/dashboard}">Dashboard</a>
-                <a class="dropdown-item" sec:authorize="hasRole('ROLE_MEDICO')" th:href="@{/medico/home}">Dashboard</a>
-                <a class="dropdown-item" sec:authorize="hasRole('ROLE_RECEPCIONISTA')" th:href="@{/recepcionista/dashboard}">Dashboard</a>
-              </li>
-              <li sec:authorize="hasRole('ROLE_PACIENTE')"> <a class="dropdown-item" th:href="@{/paciente/reservar}">Reservar cita</a>
-              <li><a class="dropdown-item" href="/logout">Cerrar sesión</a></li>
-            </ul>
-          </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <img src="https://via.placeholder.com/30" class="rounded-circle" alt="Usuario"> <span
+                        sec:authentication="principal.username"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" sec:authorize="hasRole('ROLE_PACIENTE')"
+                            th:href="@{/paciente/perfil}">Perfil</a>
+                        <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')"
+                            th:href="@{/admin/perfil}">Perfil</a>
+                        <a class="dropdown-item" sec:authorize="hasRole('ROLE_MEDICO')"
+                            th:href="@{/medico/perfil}">Perfil</a>
+                        <a class="dropdown-item" sec:authorize="hasRole('ROLE_RECEPCIONISTA')"
+                            th:href="@{/recepcionista/perfil}">Perfil</a>
+                    </li>
+                    <li sec:authorize="!hasRole('ROLE_PACIENTE')">
+                        <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')"
+                            th:href="@{/admin/dashboard}">Dashboard</a>
+                        <a class="dropdown-item" sec:authorize="hasRole('ROLE_MEDICO')"
+                            th:href="@{/medico/home}">Dashboard</a>
+                        <a class="dropdown-item" sec:authorize="hasRole('ROLE_RECEPCIONISTA')"
+                            th:href="@{/recepcionista/dashboard}">Dashboard</a>
+                    </li>
+                    <li sec:authorize="hasRole('ROLE_PACIENTE')"> <a class="dropdown-item"
+                            th:href="@{/paciente/reservar}">Reservar cita</a>
+                    <li><a class="dropdown-item" href="/logout">Cerrar sesión</a></li>
+                </ul>
+            </li>
         </ul>
-    
+
         <ul sec:authorize="isAnonymous()" class="navbar-nav ms-auto">
-          <li class="nav-item dropdown">
-            <a class="btn btn-primary" href="/usuario/login" id="bton"> iniciar sesion</a>
-          </li>
+            <li class="nav-item dropdown">
+                <a class="btn btn-primary" href="/usuario/login" id="bton"> iniciar sesion</a>
+            </li>
         </ul>
         </div>
         </div>
         </nav>
-      </header>
+    </header>
 
     <!-- Registrarse -->
     <div class="container mt-5 mb-5">
@@ -109,8 +125,8 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="email" th:field="*{correo}" placeholder="Ingrese su correo"
-                            required>
+                        <input type="email" class="form-control" id="email" th:field="*{correo}"
+                            placeholder="Ingrese su correo" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Contraseña</label>
@@ -124,7 +140,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
                     </div>
                     <p th:if="${error != null}" th:text="'Error: ' + ${error}" class="text-danger"></p>
                     <button type="submit" class="btn btn-primary w-100 mt-3">Registrarse</button>
-                    
+
                     <div class="d-flex justify-content-between mt-3">
                         <div>
                             <a href="/usuario/iniciar-sesion" class="link-primary">¿Ya tienes cuenta? Inicia sesión</a>
@@ -136,7 +152,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
         </div>
     </div>
 
-   
+
 
 
     <!-- Pie de página -->

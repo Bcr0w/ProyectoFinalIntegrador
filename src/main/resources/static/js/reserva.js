@@ -1,7 +1,7 @@
 let medicos = [];
 // Fechas y horas habilitadas (puedes cargarlas dinámicamente desde el backend)
-let fechasConHoras = { };
-let medicoAlmacenado ="";
+let fechasConHoras = {};
+let medicoAlmacenado = "";
 let fecha = "";
 let hora = "";
 
@@ -48,13 +48,13 @@ function mostrarMedicos(selectElement) {
 
     // Crear y agregar las nuevas opciones
     medicos.forEach(medico => {
-        if( value == medico.idEspecialidad){
+        if (value == medico.idEspecialidad) {
             const option = document.createElement('option');
             option.value = medico.id; // Usa el ID del médico como valor
             option.textContent = `Dr./Dra. ${medico.nombre} ${medico.apellidos}`; // Texto visible en el dropdown
             selectMedico.appendChild(option);
         }
-        
+
     });
 }
 
@@ -68,29 +68,29 @@ function obtenerHoras(idMedico) {
                 'Content-Type': 'application/json',
             },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta de la API');
-            }
-            return response.json(); // Parsear la respuesta como JSON
-        })
-        .then(data => {
-            // Verifica si la respuesta contiene las fechas con horas
-            console.log("Datos obtenidos:", data);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de la API');
+                }
+                return response.json(); // Parsear la respuesta como JSON
+            })
+            .then(data => {
+                // Verifica si la respuesta contiene las fechas con horas
+                console.log("Datos obtenidos:", data);
 
-            if (data && typeof data === 'object') {
-                fechasConHoras = data;
-                console.log("fechasConHoras actualizadas:", fechasConHoras);
-                resolve(); // Resuelve la promesa una vez que los datos se actualizan
-            } else {
-                console.error('Los datos obtenidos no son válidos:', data);
-                reject('Datos no válidos');
-            }
-        })
-        .catch(error => {
-            console.error('Hubo un error con la solicitud Fetch:', error);
-            reject(error); // Rechaza la promesa si ocurre un error
-        });
+                if (data && typeof data === 'object') {
+                    fechasConHoras = data;
+                    console.log("fechasConHoras actualizadas:", fechasConHoras);
+                    resolve(); // Resuelve la promesa una vez que los datos se actualizan
+                } else {
+                    console.error('Los datos obtenidos no son válidos:', data);
+                    reject('Datos no válidos');
+                }
+            })
+            .catch(error => {
+                console.error('Hubo un error con la solicitud Fetch:', error);
+                reject(error); // Rechaza la promesa si ocurre un error
+            });
     });
 }
 
@@ -180,7 +180,7 @@ function updateCalendar() {
     renderDays();
 }
 
-// CAMBIAR DE PASO 1,2,3
+// CAMBIAR DE PASO 1 y 2
 // Manejo de pasos
 function mostrarPaso(paso) {
     document.querySelectorAll('.paso').forEach(p => p.classList.add('d-none'));
@@ -194,7 +194,8 @@ function cargarHorasMedico() {
     const medicoSeleccionado = selectElement.value; // Obtiene el valor de la opción seleccionada
     //Dato medico
     medicoAlmacenado = medicoSeleccionado;
-    
+
+
     if (medicoSeleccionado) {
         obtenerHoras(medicoSeleccionado).then(() => {
             updateCalendar(); // Ejecutar solo después de que los datos se actualicen
@@ -205,6 +206,14 @@ function cargarHorasMedico() {
     }
 }
 
+//funciones para la animacion de carga para el pago
+function mostrarCargando() {
+    document.getElementById("loading-modal").style.display = "flex";
+}
+
+function ocultarCargando() {
+    document.getElementById("loading-modal").style.display = "none";
+}
 
 
 // Obtén el botón de envío y el formulario
@@ -214,7 +223,7 @@ const submitBtn = document.getElementById('submitBtn');
 
 
 
-document.getElementById('myForm').addEventListener('submit', function(event) {
+document.getElementById('myForm').addEventListener('submit', function (event) {
     event.preventDefault(); // Detener el envío predeterminado del formulario
 
     // Obtener los valores de los campos del formulario
@@ -223,7 +232,7 @@ document.getElementById('myForm').addEventListener('submit', function(event) {
         fechaConfirmada: fecha, // fecha
         horaConfirmada: hora // hora
     };
-
+    mostrarCargando();
     // Realizar el fetch
     fetch('/paypal/payment/create', {
         method: 'POST',
@@ -232,24 +241,53 @@ document.getElementById('myForm').addEventListener('submit', function(event) {
         },
         body: JSON.stringify(data)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error al crear el pago');
-        }
-        return response.json(); // Convertir la respuesta a JSON
-    })
-    .then(data => {
-        if (data.redirectUrl) {
-            // Redirigir al usuario a PayPal
-            window.location.href = data.redirectUrl;
-        } else {
-            alert('Error: No se encontró la URL de aprobación');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un problema al procesar el pago');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al crear el pago');
+            }
+            return response.json(); // Convertir la respuesta a JSON
+        })
+        .then(data => {
+            if (data.redirectUrl) {
+                // Redirigir al usuario a PayPal
+                window.location.href = data.redirectUrl;
+            } else {
+                alert('Error: No se encontró la URL de aprobación');
+            }
+        })
+        .catch(error => {
+            ocultarCargando();
+            console.error('Error:', error);
+            alert('Hubo un problema al procesar el pago');
+        });
 });
+//funcion para verificicar la seleccion de especialidad y medico
+function validarFormulario(event) {
+    // Obtiene los elementos select
+    const especialidadSelect = document.getElementById('especialidad');
+    const medicoSelect = document.getElementById('medico');
+
+    // Obtiene los valores seleccionados
+    const especialidadSeleccionada = especialidadSelect.value;
+    const medicoSeleccionado = medicoSelect.value;
+
+    // Validación de ambos campos
+    if (especialidadSeleccionada === "" || especialidadSeleccionada === null) {
+        alert("Por favor, selecciona una especialidad antes de continuar.");
+        event.preventDefault(); // Evita la ejecución de la siguiente función
+        return; // Detiene la ejecución si no se seleccionó una especialidad
+    }
+
+    if (medicoSeleccionado === "" || medicoSeleccionado === null) {
+        alert("Por favor, selecciona un médico antes de continuar.");
+        event.preventDefault(); // Evita la ejecución de la siguiente función
+        return; // Detiene la ejecución si no se seleccionó un médico
+    }
+
+    // Si todo está bien, ejecuta las funciones
+    cargarHorasMedico();
+    mostrarPaso(2);
+}
+
 // Initialize calendar
 obtenerMedicos();

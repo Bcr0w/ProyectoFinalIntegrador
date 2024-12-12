@@ -55,7 +55,16 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
                 sec:authentication="principal.username"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Perfil</a></li>
+              <li>
+                <a class="dropdown-item" sec:authorize="hasRole('ROLE_PACIENTE')"
+                    th:href="@{/paciente/perfil}">Perfil</a>
+                <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')"
+                    th:href="@{/admin/perfil}">Perfil</a>
+                <a class="dropdown-item" sec:authorize="hasRole('ROLE_MEDICO')"
+                    th:href="@{/medico/perfil}">Perfil</a>
+                <a class="dropdown-item" sec:authorize="hasRole('ROLE_RECEPCIONISTA')"
+                    th:href="@{/recepcionista/perfil}">Perfil</a>
+            </li>
               <li sec:authorize="!hasRole('ROLE_PACIENTE')">
                 <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/dashboard}">Dashboard</a>
                 <a class="dropdown-item" sec:authorize="hasRole('ROLE_MEDICO')" th:href="@{/medico/home}">Dashboard</a>

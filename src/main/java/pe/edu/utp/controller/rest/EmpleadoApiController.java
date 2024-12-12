@@ -1,5 +1,7 @@
 package pe.edu.utp.controller.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +26,9 @@ public class EmpleadoApiController {
     EmpleadoFacade empleadoFacade;
 
     HashMap<String,Object> data;
+    //LOGS
+    private static final Logger logger = LoggerFactory.getLogger(EmpleadoApiController.class);
+
     
    
    @GetMapping("/info/{id}")
@@ -46,6 +51,7 @@ public class EmpleadoApiController {
    @DeleteMapping("/eliminar")
 public ResponseEntity<Void> eliminarEmpleado(@RequestBody Integer id) {
     empleadoFacade.eliminarEmpleado(id);
+    logger.info("INFO: Se ha eliminado un empleado correctamente ");
     return ResponseEntity.noContent().build();
 }
 
