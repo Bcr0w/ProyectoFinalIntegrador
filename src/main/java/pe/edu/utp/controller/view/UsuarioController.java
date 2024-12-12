@@ -41,8 +41,7 @@ public class UsuarioController {
   @GetMapping("/login")
   public String iniciar(@RequestParam(value = "error", required = false) String error,Model model) {
     if (error != null) {
-      //LOGGER
-      logger.warn("ADVERTENCIA: Se ha intentado ingresar al sistema con credenciales incorrectos");
+      model.addAttribute("error", "Las credenciales son incorrectas");
   }
      return "iniciarSesion";
   }
